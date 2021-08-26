@@ -372,15 +372,19 @@ class PythonVersion(object):
             if executable is not None:
                 if not isinstance(executable, six.string_types):
                     executable = executable.as_posix()
-                instance_dict = self.parse_executable(executable)
-                for k in instance_dict.keys():
-                    try:
-                        super(PythonVersion, self).__getattribute__(k)
-                    except AttributeError:
-                        continue
-                    else:
-                        setattr(self, k, instance_dict[k])
-                result = instance_dict.get(key)
+                try:
+                    instance_dict = self.parse_executable(executable)
+                except ValueError:
+                    pass
+                else:
+                    for k in instance_dict.keys():
+                        try:
+                            super(PythonVersion, self).__getattribute__(k)
+                        except AttributeError:
+                            continue
+                        else:
+                            setattr(self, k, instance_dict[k])
+                    result = instance_dict.get(key)
         return result
 
     @property
